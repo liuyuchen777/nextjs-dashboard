@@ -9,24 +9,24 @@ const users = [
   },
 ];
 
-const customers = [
+const members = [
   {
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
     name: 'Yuchen Liu',
     email: 'liuyuchen.hust@gmail.com',
-    image_url: '/customers/chen-chen.png',
+    image_url: '/members/chen-chen.png',
   },
   {
     id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
     name: 'Zhengdan Lin',
     email: 'linzhengdan97@gmail.com',
-    image_url: '/customers/rin-rin.png',
+    image_url: '/members/rin-rin.png',
   },
 ];
 
-const invoices = [
+const transactions = [
   {
-    customer_id: customers[0].id,
+    member_id: members[0].id,
     amount: 15795,
     status: 'cost',
     date: '2022-12-06',
@@ -37,7 +37,7 @@ const invoices = [
     accountant_book: '企鹅柴犬账本',
   },
   {
-    customer_id: customers[1].id,
+    member_id: members[1].id,
     amount: 15795,
     status: 'cost',
     date: '2022-12-06',
@@ -48,7 +48,7 @@ const invoices = [
     accountant_book: '企鹅柴犬账本',
   },
   {
-    customer_id: customers[0].id,
+    member_id: members[0].id,
     amount: 15795,
     status: 'income',
     date: '2022-12-06',
@@ -62,6 +62,6 @@ const invoices = [
 
 module.exports = {
   users,
-  customers,
-  invoices,
+  members,
+  transactions,
 };

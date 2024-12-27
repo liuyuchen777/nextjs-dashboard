@@ -1,7 +1,7 @@
-import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, NoSymbolIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 
-export default function InvoiceStatus({ status }: { status: string }) {
+export default function TransactionStatus({ status }: { status: string }) {
   return (
     <span
       className={clsx(
@@ -12,16 +12,14 @@ export default function InvoiceStatus({ status }: { status: string }) {
         },
       )}
     >
-      {status === 'pending' ? (
+      {status === 'cost' ? (
         <>
-          Pending
-          <ClockIcon className="ml-1 w-4 text-gray-500" />
+          Cost <NoSymbolIcon className="ml-1 w-4 text-red-500" />
         </>
       ) : null}
-      {status === 'paid' ? (
+      {status === 'income' ? (
         <>
-          Paid
-          <CheckIcon className="ml-1 w-4 text-white" />
+          Income <CheckIcon className="h-4 w-4 text-green-500" />
         </>
       ) : null}
     </span>

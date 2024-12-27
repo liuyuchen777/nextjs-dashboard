@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import { UpdateTransaction, DeleteTransaction } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
+import { UpdateTransaction, DeleteTransaction } from '@/app/ui/transactions/buttons';
+import TransactionStatus from '@/app/ui/transactions/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredTransactions } from '@/app/lib/data';
 
@@ -36,7 +36,7 @@ export default async function TransactionsTable({
                       <p>{transaction.name}</p>
                     </div>
                   </div>
-                  <InvoiceStatus status={transaction.status} />
+                  <TransactionStatus status={transaction.status} />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -68,6 +68,9 @@ export default async function TransactionsTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
                 </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Title
+                </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -98,7 +101,10 @@ export default async function TransactionsTable({
                     {formatDateToLocal(transaction.date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={transaction.status} />
+                    <TransactionStatus status={transaction.status} />
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {transaction.title}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

@@ -28,7 +28,7 @@ export async function fetchLatestTransactions() {
     return latestTransactions;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest invoices.');
+    throw new Error('Failed to fetch the latest transactions.');
   }
 }
 
@@ -52,12 +52,12 @@ export async function fetchCardData() {
     ]);
 
     const numberOfTransactions = Number(data[0].rows[0].count ?? '0');
-    const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
+    const numberOfMembers = Number(data[1].rows[0].count ?? '0');
     const totalIncome = formatCurrency(data[2].rows[0].income ?? '0');
     const totalCost = formatCurrency(data[2].rows[0].cost ?? '0');
 
     return {
-      numberOfCustomers,
+      numberOfMembers,
       numberOfTransactions,
       totalIncome,
       totalCost,
@@ -83,6 +83,7 @@ export async function fetchFilteredTransactions(
         transactions.amount,
         transactions.date,
         transactions.status,
+        transactions.title,
         members.name,
         members.email,
         members.image_url
@@ -127,7 +128,7 @@ export async function fetchTransactionsPages(query: string) {
   }
 }
 
-export async function fetchInvoiceById(id: string) {
+export async function fetchTransactionById(id: string) {
   noStore();
   try {
     const data = await sql<TransactionForm>`

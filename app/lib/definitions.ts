@@ -52,6 +52,7 @@ export type TransactionsTable = {
   image_url: string;
   date: string;
   amount: number;
+  title: string;
   status: 'income' | 'cost';
 };
 

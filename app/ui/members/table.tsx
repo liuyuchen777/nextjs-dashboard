@@ -16,7 +16,7 @@ export default async function MembersTable({
         Members
       </h1>
       <Search 
-        placeholder="Search customers..." 
+        placeholder="Search members..." 
       />
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
