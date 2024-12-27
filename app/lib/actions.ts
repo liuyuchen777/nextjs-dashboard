@@ -9,20 +9,20 @@ import { AuthError } from 'next-auth';
 
 const FormSchema = z.object({
   id: z.string(),
-  customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
+  memberId: z.string({
+    invalid_type_error: 'Please select a member.',
   }),
   amount: z.coerce
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
-  status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
+  status: z.enum(['income', 'cost'], {
+    invalid_type_error: 'Please select a transaction status.',
   }),
   date: z.string(),
 });
 
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
+const UpdateTransaction = FormSchema.omit({ id: true, date: true });
+const CreateTransaction = FormSchema.omit({ id: true, date: true });
 
 export type State = {
   errors?: {
@@ -34,8 +34,8 @@ export type State = {
 };
 
 export async function createInvoice(prevState: State, formData: FormData) {
-  const validatedFields = CreateInvoice.safeParse({
-    customerId: formData.get('customerId'),
+  const validatedFields = CreateTransaction.safeParse({
+    memberId: formData.get('memberId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
@@ -47,8 +47,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
     };
   }
 
-  const { customerId, amount, status } = CreateInvoice.parse({
-    customerId: formData.get('customerId'),
+  const { memberId, amount, status } = CreateTransaction.parse({
+    memberId: formData.get('memberId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
@@ -58,8 +58,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
 
   try {
     await sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+        INSERT INTO transactions (member_id, amount, status, date)
+        VALUES (${memberId}, ${amountInCents}, ${status}, ${date})
       `;
   } catch (error) {
     return {
@@ -67,8 +67,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
     };
   }
 
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath('/dashboard/transactions');
+  redirect('/dashboard/transactions');
 }
 
 export async function updateInvoice(
@@ -76,8 +76,8 @@ export async function updateInvoice(
   prevState: State,
   formData: FormData,
 ) {
-  const validatedFields = UpdateInvoice.safeParse({
-    customerId: formData.get('customerId'),
+  const validatedFields = UpdateTransaction.safeParse({
+    memberId: formData.get('memberId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
@@ -89,30 +89,30 @@ export async function updateInvoice(
     };
   }
 
-  const { customerId, amount, status } = validatedFields.data;
+  const { memberId, amount, status } = validatedFields.data;
   const amountInCents = amount * 100;
 
   try {
     await sql`
-      UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      UPDATE transactions
+      SET member_id = ${memberId}, amount = ${amountInCents}, status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
     return { message: 'Database Error: Failed to Update Invoice.' };
   }
 
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath('/dashboard/transactions');
+  redirect('/dashboard/transactions');
 }
 
 export async function deleteInvoice(id: string) {
   try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`;
-    revalidatePath('/dashboard/invoices');
-    return { message: 'Deleted Invoice.' };
+    await sql`DELETE FROM transactions WHERE id = ${id}`;
+    revalidatePath('/dashboard/transactions');
+    return { message: 'Deleted Transaction.' };
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Invoice.' };
+    return { message: 'Database Error: Failed to Delete Transaction.' };
   }
 }
 

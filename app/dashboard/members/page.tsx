@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import CustomersTable from "@/app/ui/customers/table";
-import { fetchFilteredCustomers } from "@/app/lib/data";
+import MembersTable from "@/app/ui/members/table";
+import { fetchFilteredMembers } from "@/app/lib/data";
 
 export const metadata: Metadata = {
   title: 'Customers',
@@ -15,11 +15,11 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || '';
-  const customers = await fetchFilteredCustomers(query);
+  const members = await fetchFilteredMembers(query);
 
   return (
     <div className="w-full">
-      <CustomersTable customers={customers}/>
+      <MembersTable members={members}/>
     </div>
   );
 }
