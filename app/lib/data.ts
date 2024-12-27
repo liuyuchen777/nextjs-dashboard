@@ -15,7 +15,7 @@ export async function fetchLatestTransactions() {
   noStore();
   try {
     const data = await sql<LatestInvoiceRaw>`
-      SELECT transactions.amount, members.name, members.image_url, members.email, transactions.id
+      SELECT transactions.amount, members.name, members.image_url, members.email, transactions.id, transactions.title, transactions.accountant_book
       FROM transactions
       JOIN members ON transactions.member_id = members.id
       ORDER BY transactions.date DESC

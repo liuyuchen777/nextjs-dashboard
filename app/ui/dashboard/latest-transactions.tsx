@@ -13,10 +13,10 @@ export default async function LatestTransactions() {
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         <div className="bg-white px-6">
-          {latestTransactions.map((invoice, i) => {
+          {latestTransactions.map((transaction, i) => {
             return (
               <div
-                key={invoice.id}
+                key={transaction.id}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -26,25 +26,30 @@ export default async function LatestTransactions() {
               >
                 <div className="flex items-center">
                   <Image
-                    src={invoice.image_url}
-                    alt={`${invoice.name}'s profile picture`}
+                    src={transaction.image_url}
+                    alt={`${transaction.name}'s profile picture`}
                     className="mr-4 rounded-full"
                     width={32}
                     height={32}
                   />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
-                      {invoice.name}
+                      {transaction.name}
                     </p>
                     <p className="hidden text-sm text-gray-500 sm:block">
-                      {invoice.email}
+                      {transaction.email}
                     </p>
                   </div>
                 </div>
                 <p
+                  className={`${lusitana.className} truncate text-sm font-small md:text-base`}
+                >
+                  {transaction.title}
+                </p>
+                <p
                   className={`${lusitana.className} truncate text-sm font-medium md:text-base`}
                 >
-                  {invoice.amount}
+                  {transaction.amount}
                 </p>
               </div>
             );
