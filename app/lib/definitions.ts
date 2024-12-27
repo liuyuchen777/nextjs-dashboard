@@ -54,6 +54,7 @@ export type TransactionsTable = {
   amount: number;
   title: string;
   status: 'income' | 'cost';
+  accountant_book: string;
 };
 
 export type MembersTableType = {

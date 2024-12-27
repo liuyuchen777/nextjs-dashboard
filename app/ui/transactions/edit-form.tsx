@@ -2,8 +2,6 @@
 
 import { MemberField, TransactionForm } from '@/app/lib/definitions';
 import {
-  CheckIcon,
-  ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';

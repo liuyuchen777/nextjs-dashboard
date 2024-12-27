@@ -71,6 +71,9 @@ export default async function TransactionsTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Title
                 </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Accountant Book
+                </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -105,6 +108,9 @@ export default async function TransactionsTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {transaction.title}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {transaction.accountant_book}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

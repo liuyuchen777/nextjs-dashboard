@@ -52,9 +52,9 @@ export async function fetchCardData() {
     ]);
 
     const numberOfTransactions = Number(data[0].rows[0].count ?? '0');
-    const numberOfMembers = Number(data[1].rows[0].count ?? '0');
-    const totalIncome = formatCurrency(data[2].rows[0].income ?? '0');
-    const totalCost = formatCurrency(data[2].rows[0].cost ?? '0');
+    const numberOfMembers = Number(data[1].rows[0].count ?? '0');    
+    const totalIncome = formatCurrency(Number(data[2].rows[0].income ?? '0'));
+    const totalCost = formatCurrency(Number(data[2].rows[0].cost ?? '0'));
 
     return {
       numberOfMembers,
@@ -84,6 +84,7 @@ export async function fetchFilteredTransactions(
         transactions.date,
         transactions.status,
         transactions.title,
+        transactions.accountant_book,
         members.name,
         members.email,
         members.image_url
