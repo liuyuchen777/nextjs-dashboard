@@ -24,7 +24,7 @@ export default async function LatestTransactions() {
                   },
                 )}
               >
-                <div className="flex items-center">
+                <div className="flex items-center w-[40%]">
                   <Image
                     src={transaction.image_url}
                     alt={`${transaction.name}'s profile picture`}
@@ -41,16 +41,16 @@ export default async function LatestTransactions() {
                     </p>
                   </div>
                 </div>
-                <p
-                  className={`${lusitana.className} truncate text-sm font-small md:text-base`}
-                >
-                  {transaction.title}
-                </p>
-                <p
-                  className={`${lusitana.className} truncate text-sm font-medium md:text-base`}
-                >
-                  {transaction.amount}
-                </p>
+                <div className="w-[30%] text-right">
+                  <p className={`${lusitana.className} truncate text-sm font-medium md:text-base`}>
+                    {transaction.title}
+                  </p>
+                </div>
+                <div className="w-[20%] text-right">
+                  <p className={`${lusitana.className} truncate text-sm font-medium md:text-base`}>
+                    ¥{transaction.amount}
+                  </p>
+                </div>
               </div>
             );
           })}
