@@ -107,7 +107,12 @@ export async function fetchFilteredTransactions(
         members.email ILIKE ${`%${query}%`} OR
         transactions.amount::text ILIKE ${`%${query}%`} OR
         transactions.date::text ILIKE ${`%${query}%`} OR
-        transactions.status ILIKE ${`%${query}%`}
+        transactions.status ILIKE ${`%${query}%`} OR
+        transactions.accountant_book ILIKE ${`%${query}%`} OR
+        transactions.class ILIKE ${`%${query}%`} OR
+        transactions.sub_class ILIKE ${`%${query}%`} OR
+        transactions.title ILIKE ${`%${query}%`} OR
+        transactions.description ILIKE ${`%${query}%`}
       ORDER BY transactions.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;

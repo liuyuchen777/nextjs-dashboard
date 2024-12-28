@@ -71,7 +71,7 @@ export default function DateRangeSelector() {
   };
 
   return (
-    <div className="mb-4 flex items-center gap-4">
+    <div className="mb-4 flex flex-wrap items-center gap-4">
       <div className="flex items-center gap-2">
         <label htmlFor="start-date">From:</label>
         <input
@@ -98,7 +98,7 @@ export default function DateRangeSelector() {
           className="rounded-md border px-2 py-1"
         />
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {getPresetRanges().map((preset) => (
           <button
             key={preset.label}
