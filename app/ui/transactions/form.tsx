@@ -1,19 +1,32 @@
 'use client';
 
-import { MemberField } from '@/app/lib/definitions';
+import { MemberField, TransactionForm } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CurrencyYenIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createInvoice } from '@/app/lib/actions';
+import { createInvoice, updateTransaction } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 import TransactionStatus from './transaction-status';
 
-export default function Form({ members }: { members: MemberField[] }) {
+export default function Form({ 
+  members,
+  transaction,
+}: { 
+  members: MemberField[];
+  transaction?: TransactionForm;
+}) {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createInvoice, initialState);
+  const isEditing = !!transaction;
+
+  // Use different actions based on whether we're editing or creating
+  const formAction = isEditing 
+    ? updateTransaction.bind(null, transaction.id)
+    : createInvoice;
+
+  const [state, dispatch] = useFormState(formAction, initialState);
 
   return (
     <form action={dispatch}>
@@ -28,8 +41,8 @@ export default function Form({ members }: { members: MemberField[] }) {
               id="customer"
               name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
-              required
+              defaultValue={transaction?.member_id || ""}
+              required={!isEditing}
               aria-describedby="customer-error"
             >
               <option value="" disabled>
@@ -65,9 +78,10 @@ export default function Form({ members }: { members: MemberField[] }) {
                 name="amount"
                 type="number"
                 step="0.01"
+                defaultValue={transaction?.amount}
                 placeholder="Enter JPY amount"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                required
+                required={!isEditing}
               />
               <CurrencyYenIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -75,12 +89,8 @@ export default function Form({ members }: { members: MemberField[] }) {
         </div>
 
         {/* Transaction Status */}
-        <TransactionStatus status={"cost"} />
+        <TransactionStatus status={transaction?.status || "cost"} />
       </div>
-
-      {/* Transaction Date */}
-              
-      {/* Transaction Class */}
 
       <div className="mt-6 flex justify-end gap-4">
         <Link
@@ -89,8 +99,10 @@ export default function Form({ members }: { members: MemberField[] }) {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Transaction</Button>
+        <Button type="submit">
+          {isEditing ? 'Edit Transaction' : 'Create Transaction'}
+        </Button>
       </div>
     </form>
   );
-}
+} 

@@ -1,4 +1,4 @@
-import Form from '@/app/ui/transactions/create-form';
+import Form from '@/app/ui/transactions/form';
 import Breadcrumbs from '@/app/ui/transactions/breadcrumbs';
 import { fetchMembers } from '@/app/lib/data';
 import { Metadata } from 'next';

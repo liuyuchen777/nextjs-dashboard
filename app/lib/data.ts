@@ -32,27 +32,39 @@ export async function fetchLatestTransactions() {
   }
 }
 
-export async function fetchCardData() {
-  noStore();
+export async function fetchCardData(startDate?: string, endDate?: string) {
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const transactionCountPromise = sql`SELECT COUNT(*) FROM transactions`;
+    console.log("start date and end date: ", startDate, endDate);
+    
     const memberCountPromise = sql`SELECT COUNT(*) FROM members`;
-    const transactionStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'income' THEN amount ELSE 0 END) AS "income",
-         SUM(CASE WHEN status = 'cost' THEN amount ELSE 0 END) AS "cost"
-         FROM transactions`;
+    const transactionCountPromise = startDate && endDate 
+      ? sql`
+          SELECT COUNT(*) 
+          FROM transactions 
+          WHERE date >= ${startDate} AND date <= ${endDate}`
+      : sql`SELECT COUNT(*) FROM transactions`;
+    
+    const transactionStatusPromise = startDate && endDate
+      ? sql`
+          SELECT
+            SUM(CASE WHEN status = 'income' THEN amount ELSE 0 END) AS "income",
+            SUM(CASE WHEN status = 'cost' THEN amount ELSE 0 END) AS "cost"
+          FROM transactions
+          WHERE date >= ${startDate} AND date <= ${endDate}`
+      : sql`
+          SELECT
+            SUM(CASE WHEN status = 'income' THEN amount ELSE 0 END) AS "income",
+            SUM(CASE WHEN status = 'cost' THEN amount ELSE 0 END) AS "cost"
+          FROM transactions`;
 
     const data = await Promise.all([
-      transactionCountPromise,
       memberCountPromise,
+      transactionCountPromise,
       transactionStatusPromise,
     ]);
 
-    const numberOfTransactions = Number(data[0].rows[0].count ?? '0');
-    const numberOfMembers = Number(data[1].rows[0].count ?? '0');    
+    const numberOfMembers = Number(data[0].rows[0].count ?? '0');
+    const numberOfTransactions = Number(data[1].rows[0].count ?? '0');    
     const totalIncome = formatCurrency(Number(data[2].rows[0].income ?? '0'));
     const totalCost = formatCurrency(Number(data[2].rows[0].cost ?? '0'));
 

@@ -1,11 +1,11 @@
 import {
   BanknotesIcon,
-  ClockIcon,
   UserGroupIcon,
   InboxIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchCardData } from '@/app/lib/data';
+import DateRangeSelector from '@/app/ui/dashboard/date-range-selector';
 
 const iconMap = {
   income: BanknotesIcon,
@@ -14,20 +14,28 @@ const iconMap = {
   transactions: InboxIcon,
 };
 
-export default async function CardWrapper() {
+interface CardWrapperProps {
+  startDate?: string;
+  endDate?: string;
+}
+
+export default async function CardWrapper({ startDate, endDate }: CardWrapperProps) {
   const {
-    numberOfTransactions,
     numberOfMembers,
+    numberOfTransactions,
     totalIncome,
     totalCost,
-  } = await fetchCardData();
+  } = await fetchCardData(startDate, endDate);
+  
   return (
-    <>
-      <Card title="Total Income" value={totalIncome} type="income" />
-      <Card title="Total Cost" value={totalCost} type="cost" />
-      <Card title="Total Transactions" value={numberOfTransactions} type="transactions" />
-      <Card title="Total Members" value={numberOfMembers} type="members"/>
-    </>
+    <div className="flex flex-col gap-6">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <Card title="Total Income" value={totalIncome} type="income" />
+        <Card title="Total Cost" value={totalCost} type="cost" />
+        <Card title="Total Transactions" value={numberOfTransactions} type="transactions" />
+        <Card title="Total Members" value={numberOfMembers} type="members"/>
+      </div>
+    </div>
   );
 }
 
