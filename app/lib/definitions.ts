@@ -76,7 +76,7 @@ export type MemberField = {
 };
 
 export enum AccountantBook {
-  familyAccountantBook = '企鹅柴犬购物金',
+  familyAccountantBook = '企鹅柴犬家庭账本',
   wifePersonalAccountantBook = '企鹅购物金',
   husbandPersonalAccountantBook = '柴犬购物金',
 }
