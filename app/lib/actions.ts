@@ -6,19 +6,25 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { AccountantBook } from './definitions';
 
 const FormSchema = z.object({
   id: z.string(),
-  memberId: z.string({
+  member_id: z.string({
     invalid_type_error: 'Please select a member.',
   }),
   amount: z.coerce
     .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
+    .gt(0, { message: 'Please enter an amount greater than ¥0.' }),
   status: z.enum(['income', 'cost'], {
     invalid_type_error: 'Please select a transaction status.',
   }),
   date: z.string(),
+  accountant_book: z.enum(Object.values(AccountantBook) as [string, ...string[]]),
+  class: z.string().nullable(),
+  sub_class: z.string().nullable(),
+  title: z.string().nullable(),
+  description: z.string().nullable(),
 });
 
 const UpdateTransaction = FormSchema.omit({ id: true, date: true });
@@ -26,44 +32,54 @@ const CreateTransaction = FormSchema.omit({ id: true, date: true });
 
 export type State = {
   errors?: {
-    customerId?: string[];
+    member_id?: string[];
     amount?: string[];
     status?: string[];
   };
   message?: string | null;
 };
 
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createTransaction(prevState: State, formData: FormData) {
   const validatedFields = CreateTransaction.safeParse({
-    memberId: formData.get('memberId'),
+    member_id: formData.get('memberId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
+    accountant_book: formData.get('accountantBook'),
+    class: formData.get('class'),
+    sub_class: formData.get('subClass'),
+    title: formData.get('title'),
+    description: formData.get('description'),
   });
 
   if (!validatedFields.success) {
+    const validateError = validatedFields.error.flatten().fieldErrors;
+    console.log(validateError);
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
+      errors: validateError,
+      message: 'Missing Fields. Failed to Update Transaction.',
     };
   }
 
-  const { memberId, amount, status } = CreateTransaction.parse({
-    memberId: formData.get('memberId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
-
-  const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
   try {
     await sql`
-        INSERT INTO transactions (member_id, amount, status, date)
-        VALUES (${memberId}, ${amountInCents}, ${status}, ${date})
+        INSERT INTO transactions (member_id, amount, status, date, accountant_book, class, sub_class, title, description)
+        VALUES (
+          ${validatedFields.data.member_id}, 
+          ${validatedFields.data.amount}, 
+          ${validatedFields.data.status}, 
+          ${date}, 
+          ${validatedFields.data.accountant_book}, 
+          ${validatedFields.data.class}, 
+          ${validatedFields.data.sub_class}, 
+          ${validatedFields.data.title}, 
+          ${validatedFields.data.description}
+        )
       `;
   } catch (error) {
     return {
-      message: 'Database Error: Failed to Create Invoice.',
+      message: 'Database Error: Failed to Create Transaction.',
     };
   }
 
@@ -76,37 +92,51 @@ export async function updateTransaction(
   prevState: State,
   formData: FormData,
 ) {
+  console.log("Update transaction: ", formData);
+
   const validatedFields = UpdateTransaction.safeParse({
-    memberId: formData.get('memberId'),
+    member_id: formData.get('memberId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
+    accountant_book: formData.get('accountantBook'),
+    class: formData.get('class'),
+    sub_class: formData.get('subClass'),
+    title: formData.get('title'),
+    description: formData.get('description'),
   });
 
   if (!validatedFields.success) {
+    const validateError = validatedFields.error.flatten().fieldErrors;
+    console.log(validateError);
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Invoice.',
+      errors: validateError,
+      message: 'Missing Fields. Failed to Update Transaction.',
     };
   }
-
-  const { memberId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
 
   try {
     await sql`
       UPDATE transactions
-      SET member_id = ${memberId}, amount = ${amountInCents}, status = ${status}
+      SET 
+        member_id = ${validatedFields.data.member_id}, 
+        amount = ${validatedFields.data.amount}, 
+        status = ${validatedFields.data.status}, 
+        accountant_book = ${validatedFields.data.accountant_book}, 
+        class = ${validatedFields.data.class}, 
+        sub_class = ${validatedFields.data.sub_class}, 
+        title = ${validatedFields.data.title}, 
+        description = ${validatedFields.data.description}
       WHERE id = ${id}
     `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' };
+    return { message: 'Database Error: Failed to Update Transaction.' };
   }
 
   revalidatePath('/dashboard/transactions');
   redirect('/dashboard/transactions');
 }
 
-export async function deleteInvoice(id: string) {
+export async function deleteTransaction(id: string) {
   try {
     await sql`DELETE FROM transactions WHERE id = ${id}`;
     revalidatePath('/dashboard/transactions');

@@ -1,7 +1,3 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
   id: string;
   name: string;
@@ -21,8 +17,6 @@ export type Transaction = {
   member_id: string;
   amount: number;
   date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
   status: 'income' | 'cost';
   class: string;
   sub_class: string;
@@ -41,7 +35,6 @@ export type LatestTransaction = {
   accountant_book: string;
 };
 
-// The database returns a number for amount, but we later format it to a string with the formatCurrency function
 export type LatestInvoiceRaw = Omit<LatestTransaction, 'amount'> & {
   amount: number;
 };
@@ -82,9 +75,41 @@ export type MemberField = {
   name: string;
 };
 
+export enum AccountantBook {
+  familyAccountantBook = '企鹅柴犬购物金',
+  wifePersonalAccountantBook = '企鹅购物金',
+  husbandPersonalAccountantBook = '柴犬购物金',
+}
+
+export const classAndSubClassMap: Record<string, string[]> = {
+  '餐饮': [
+    '午餐',
+    '晚餐',
+    '零食',
+    '饮料',
+    '其他',
+  ],
+  '交通': [
+    '电车',
+    '出租车',
+    '其他',
+  ],
+  '生活': [
+    '水道费',
+    '电费',
+    '燃气费',
+    '其他',
+  ],
+};
+
 export type TransactionForm = {
   id: string;
   member_id: string;
   amount: number;
   status: 'income' | 'cost';
+  accountant_book: AccountantBook;
+  class: string;
+  sub_class: string;
+  title: string;
+  description: string;
 };

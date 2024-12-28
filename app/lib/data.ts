@@ -149,17 +149,20 @@ export async function fetchTransactionById(id: string) {
         transactions.id,
         transactions.member_id,
         transactions.amount,
-        transactions.status
+        transactions.status,
+        transactions.accountant_book,
+        transactions.class,
+        transactions.sub_class,
+        transactions.title,
+        transactions.description
       FROM transactions
       WHERE transactions.id = ${id};
     `;
 
     const transaction = data.rows.map((transaction) => ({
       ...transaction,
-      // Convert amount from cents to dollars
-      amount: transaction.amount / 100,
+      amount: transaction.amount,
     }));
-    console.log(transaction);
     return transaction[0];
   } catch (error) {
     console.error('Database Error:', error);
