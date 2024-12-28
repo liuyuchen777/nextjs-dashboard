@@ -17,15 +17,16 @@ const iconMap = {
 interface CardWrapperProps {
   startDate?: string;
   endDate?: string;
+  accountantBook: string;
 }
 
-export default async function CardWrapper({ startDate, endDate }: CardWrapperProps) {
+export default async function CardWrapper({ startDate, endDate, accountantBook }: CardWrapperProps) {
   const {
     numberOfMembers,
     numberOfTransactions,
     totalIncome,
     totalCost,
-  } = await fetchCardData(startDate, endDate);
+  } = await fetchCardData(startDate, endDate, accountantBook);
   
   return (
     <div className="flex flex-col gap-6">

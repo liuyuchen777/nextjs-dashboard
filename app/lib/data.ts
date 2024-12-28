@@ -37,7 +37,7 @@ export async function fetchLatestTransactions() {
   }
 }
 
-export async function fetchCardData(startDate?: string, endDate?: string) {
+export async function fetchCardData(startDate?: string, endDate?: string, accountantBook?: string) {
   try {
     console.log("start date and end date: ", startDate, endDate);
     
@@ -46,8 +46,8 @@ export async function fetchCardData(startDate?: string, endDate?: string) {
       ? sql`
           SELECT COUNT(*) 
           FROM transactions 
-          WHERE date >= ${startDate} AND date <= ${endDate}`
-      : sql`SELECT COUNT(*) FROM transactions`;
+          WHERE date >= ${startDate} AND date <= ${endDate} AND accountant_book = ${accountantBook}`
+      : sql`SELECT COUNT(*) FROM transactions WHERE accountant_book = ${accountantBook}`;
     
     const transactionStatusPromise = startDate && endDate
       ? sql`
@@ -55,12 +55,12 @@ export async function fetchCardData(startDate?: string, endDate?: string) {
             SUM(CASE WHEN status = 'income' THEN amount ELSE 0 END) AS "income",
             SUM(CASE WHEN status = 'cost' THEN amount ELSE 0 END) AS "cost"
           FROM transactions
-          WHERE date >= ${startDate} AND date <= ${endDate}`
+          WHERE date >= ${startDate} AND date <= ${endDate} AND accountant_book = ${accountantBook}`
       : sql`
           SELECT
             SUM(CASE WHEN status = 'income' THEN amount ELSE 0 END) AS "income",
             SUM(CASE WHEN status = 'cost' THEN amount ELSE 0 END) AS "cost"
-          FROM transactions`;
+          FROM transactions WHERE accountant_book = ${accountantBook}`;
 
     const data = await Promise.all([
       memberCountPromise,
@@ -242,7 +242,7 @@ export async function getUser(email: string) {
   }
 }
 
-export async function fetchLast14DaysCosts() {
+export async function fetchLast14DaysCosts(accountantBook: string) {
   noStore();
   try {
     const data = await sql<CostData>`
@@ -257,7 +257,8 @@ export async function fetchLast14DaysCosts() {
         dates.date::date,
         COALESCE(SUM(CASE WHEN transactions.status = 'cost' THEN transactions.amount ELSE 0 END), 0) as total_cost
       FROM dates
-      LEFT JOIN transactions ON DATE(transactions.date) = dates.date
+      LEFT JOIN transactions ON DATE(transactions.date) = dates.date 
+        AND transactions.accountant_book = ${accountantBook}
       GROUP BY dates.date
       ORDER BY dates.date ASC;
     `;
