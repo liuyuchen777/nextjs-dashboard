@@ -33,10 +33,15 @@ export default function Form({
     setSelectedClass(e.target.value);
   };
 
+  // Datetime
+  const now = new Date();
+  const jstOffset = 9 * 60; // JST is UTC+9
+  const jstDate = new Date(now.getTime() + jstOffset * 60 * 1000);
+
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        
+
         {/* Member Name */}
         <div className="mb-4">
           <label htmlFor="memberId" className="mb-2 block text-sm font-medium">
@@ -69,6 +74,23 @@ export default function Form({
                   {error}
                 </p>
               ))}
+          </div>
+        </div>
+
+        {/* Transaction Date */}
+        <div className="mb-4">
+          <label htmlFor="date" className="mb-2 block text-sm font-medium">
+            Transaction Date
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <input
+              id="datetime"
+              name="datetime"
+              type="datetime-local"
+              defaultValue={transaction?.date ? new Date().toISOString().slice(0, 16) : jstDate.toISOString().slice(0, 16)}
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
+              required={!isEditing}
+            />
           </div>
         </div>
 

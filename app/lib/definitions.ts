@@ -112,4 +112,5 @@ export type TransactionForm = {
   sub_class: string;
   title: string;
   description: string;
+  date: string;
 };

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { UpdateTransaction, DeleteTransaction } from '@/app/ui/transactions/buttons';
 import TransactionStatus from '@/app/ui/transactions/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
+import { formatDateToLocal, formatCurrency, formatDateTimeToLocal } from '@/app/lib/utils';
 import { fetchFilteredTransactions } from '@/app/lib/data';
 
 export default async function TransactionsTable({
@@ -35,6 +35,7 @@ export default async function TransactionsTable({
                       />
                       <p>{transaction.name}</p>
                     </div>
+                    <p className="text-md text-black-500">{transaction.title}</p>
                   </div>
                   <TransactionStatus status={transaction.status} />
                 </div>
@@ -101,7 +102,7 @@ export default async function TransactionsTable({
                     {formatCurrency(transaction.amount)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(transaction.date)}
+                    {formatDateTimeToLocal(transaction.date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <TransactionStatus status={transaction.status} />

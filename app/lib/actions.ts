@@ -27,8 +27,8 @@ const FormSchema = z.object({
   description: z.string().nullable(),
 });
 
-const UpdateTransaction = FormSchema.omit({ id: true, date: true });
-const CreateTransaction = FormSchema.omit({ id: true, date: true });
+const UpdateTransaction = FormSchema.omit({ id: true });
+const CreateTransaction = FormSchema.omit({ id: true });
 
 export type State = {
   errors?: {
@@ -49,6 +49,7 @@ export async function createTransaction(prevState: State, formData: FormData) {
     sub_class: formData.get('subClass'),
     title: formData.get('title'),
     description: formData.get('description'),
+    date: formData.get('datetime'),
   });
 
   if (!validatedFields.success) {
@@ -60,8 +61,6 @@ export async function createTransaction(prevState: State, formData: FormData) {
     };
   }
 
-  const date = new Date().toISOString().split('T')[0];
-
   try {
     await sql`
         INSERT INTO transactions (member_id, amount, status, date, accountant_book, class, sub_class, title, description)
@@ -69,7 +68,7 @@ export async function createTransaction(prevState: State, formData: FormData) {
           ${validatedFields.data.member_id}, 
           ${validatedFields.data.amount}, 
           ${validatedFields.data.status}, 
-          ${date}, 
+          ${validatedFields.data.date}, 
           ${validatedFields.data.accountant_book}, 
           ${validatedFields.data.class}, 
           ${validatedFields.data.sub_class}, 
@@ -92,8 +91,6 @@ export async function updateTransaction(
   prevState: State,
   formData: FormData,
 ) {
-  console.log("Update transaction: ", formData);
-
   const validatedFields = UpdateTransaction.safeParse({
     member_id: formData.get('memberId'),
     amount: formData.get('amount'),
@@ -103,6 +100,7 @@ export async function updateTransaction(
     sub_class: formData.get('subClass'),
     title: formData.get('title'),
     description: formData.get('description'),
+    date: formData.get('datetime'),
   });
 
   if (!validatedFields.success) {
@@ -125,7 +123,8 @@ export async function updateTransaction(
         class = ${validatedFields.data.class}, 
         sub_class = ${validatedFields.data.sub_class}, 
         title = ${validatedFields.data.title}, 
-        description = ${validatedFields.data.description}
+        description = ${validatedFields.data.description},
+        date = ${validatedFields.data.date}
       WHERE id = ${id}
     `;
   } catch (error) {

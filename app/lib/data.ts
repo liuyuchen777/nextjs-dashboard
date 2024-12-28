@@ -164,7 +164,8 @@ export async function fetchTransactionById(id: string) {
         transactions.class,
         transactions.sub_class,
         transactions.title,
-        transactions.description
+        transactions.description,
+        transactions.date
       FROM transactions
       WHERE transactions.id = ${id};
     `;
@@ -188,6 +189,7 @@ export async function fetchMembers() {
         name
       FROM members
       ORDER BY name ASC
+      LIMIT 10
     `;
 
     const members = data.rows;

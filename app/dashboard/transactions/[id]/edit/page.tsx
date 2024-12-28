@@ -17,6 +17,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!transaction) {
     notFound();
   }
+  
   return (
     <main>
       <Breadcrumbs

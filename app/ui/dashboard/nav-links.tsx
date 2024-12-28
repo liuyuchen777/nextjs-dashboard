@@ -3,7 +3,7 @@
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
+  PlusCircleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -16,7 +16,7 @@ const links = [
   {
     name: 'Transactions',
     href: '/dashboard/transactions',
-    icon: DocumentDuplicateIcon,
+    icon: PlusCircleIcon,
   },
   { name: 'Members', href: '/dashboard/members', icon: UserGroupIcon },
 ];
