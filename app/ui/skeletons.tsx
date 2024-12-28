@@ -67,6 +67,17 @@ export function LatestTransactionsSkeleton() {
   );
 }
 
+export function CostsChartSkeleton() {
+  return (
+    <div className="w-full md:col-span-4">
+      <div className="h-8 w-36 mb-4 skeleton-box" />
+      <div className="rounded-xl bg-gray-50 p-4">
+        <div className="h-[350px] skeleton-box" />
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardSkeleton() {
   return (
     <>

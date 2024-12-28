@@ -1,5 +1,6 @@
 import CardWrapper from '@/app/ui/dashboard/cards';
 import LatestTransactions from '@/app/ui/dashboard/latest-transactions';
+import CostsChartWrapper from '@/app/ui/dashboard/costs-chart-wrapper';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import {
@@ -29,6 +30,9 @@ export default function Page({ searchParams }: { searchParams?: { startDate?: st
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <Suspense fallback={<LatestTransactionsSkeleton />}>
           <LatestTransactions />
+        </Suspense>
+        <Suspense fallback={<div className="md:col-span-4 h-[400px] skeleton-box" />}>
+          <CostsChartWrapper />
         </Suspense>
       </div>
     </main>

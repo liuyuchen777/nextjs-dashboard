@@ -11,6 +11,11 @@ import {
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
+type CostData = {
+  date: string;
+  total_cost: number;
+};
+
 export async function fetchLatestTransactions() {
   noStore();
   try {
@@ -232,5 +237,32 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
+  }
+}
+
+export async function fetchLast14DaysCosts() {
+  noStore();
+  try {
+    const data = await sql<CostData>`
+      WITH RECURSIVE dates AS (
+        SELECT CURRENT_DATE - INTERVAL '13 days' AS date
+        UNION ALL
+        SELECT date + INTERVAL '1 day'
+        FROM dates
+        WHERE date < CURRENT_DATE
+      )
+      SELECT 
+        dates.date::date,
+        COALESCE(SUM(CASE WHEN transactions.status = 'cost' THEN transactions.amount ELSE 0 END), 0) as total_cost
+      FROM dates
+      LEFT JOIN transactions ON DATE(transactions.date) = dates.date
+      GROUP BY dates.date
+      ORDER BY dates.date ASC;
+    `;
+
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch last 14 days costs.');
   }
 }
